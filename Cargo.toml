@@ -1,0 +1,10 @@
+[package]
+name = "cargo-gn"
+version = "0.0.1"
+authors = ["Ryan Dahl <ry@tinyclouds.org>"]
+edition = "2018"
+
+description = "Cargo integration with the GN build system"
+license = "MIT"
+
+[dependencies]
