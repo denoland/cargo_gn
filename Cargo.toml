@@ -1,9 +1,10 @@
 [package]
 name = "cargo_gn"
-version = "0.0.3"
+version = "0.0.4"
 authors = ["Ryan Dahl <ry@tinyclouds.org>"]
 edition = "2018"
-
+repository = "https://github.com/denoland/cargo_gn"
+readme = "README.md"
 description = "Cargo integration with the GN build system"
 license = "MIT"
 
@@ -12,5 +13,3 @@ members = [
   "example",
   ".",
 ]
-
-[dependencies]

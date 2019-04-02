@@ -10,7 +10,7 @@ Put the following in your `Cargo.toml`
 
 ```toml
 [build-dependencies]
-cargo_gn = "0.0.3"
+cargo_gn = "0.0.4"
 ```
 
 And put this exact code in your `build.rs`
