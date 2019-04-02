@@ -21,6 +21,7 @@ fn build_ninja(out_dir: &PathBuf) -> PathBuf {
   let cargo_gn_root = env::current_dir().unwrap();
   let configure = cargo_gn_root.join("ninja/configure.py");
   let status = Command::new("python")
+    .arg("-B") // PYTHONDONTWRITEBYTECODE
     .arg(configure)
     .arg("--bootstrap")
     .current_dir(&out_dir)
