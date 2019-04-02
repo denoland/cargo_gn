@@ -7,7 +7,8 @@ use std::path::PathBuf;
 use std::process::Command;
 
 pub fn out_dir() -> PathBuf {
-  PathBuf::from(env::var("OUT_DIR").unwrap()).join("gn_out")
+  let out_dir = env::var("OUT_DIR").unwrap();
+  PathBuf::from(out_dir)
 }
 
 pub fn is_debug() -> bool {
@@ -25,15 +26,16 @@ pub fn is_debug() -> bool {
 
 /// build.rs does not get re-run unless we tell cargo about what files we
 /// depend on. This outputs a bunch of rerun-if-changed lines to stdout.
-pub fn rerun_if_changed(out_dir: &PathBuf) {
-  let deps = get_deps(out_dir);
+pub fn rerun_if_changed(ninja_path: &PathBuf, out_dir: &PathBuf) {
+  let deps = get_deps(ninja_path, out_dir);
   for d in deps {
+    // TODO(ry) Assert each file exists.
     println!("cargo:rerun-if-changed={}", d);
   }
 }
 
-pub fn get_deps(out_dir: &PathBuf) -> HashSet<String> {
-  let output = Command::new("ninja")
+pub fn get_deps(ninja_path: &PathBuf, out_dir: &PathBuf) -> HashSet<String> {
+  let output = Command::new(ninja_path)
     .arg("-C")
     .arg(out_dir)
     .arg("-t")
