@@ -1,0 +1,3 @@
+[submodule "gn"]
+	path = gn
+	url = https://gn.googlesource.com/gn
