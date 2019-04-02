@@ -1,4 +1,4 @@
 [[package]]
-name = "cargo-gn"
+name = "cargo_gn"
 version = "0.0.1"
 
