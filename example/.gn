@@ -1,0 +1,4 @@
+# Uses https://github.com/timniederhausen/gn-build
+# TODO(ry) It would be cool if cargo_gn could provide a default .gn file somehow
+# so that users didn't need to provide this boilerplate.
+buildconfig = "//build/config/BUILDCONFIG.gn"

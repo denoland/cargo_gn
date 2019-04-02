@@ -10,17 +10,17 @@ pub fn out_dir() -> PathBuf {
   PathBuf::from(env::var("OUT_DIR").unwrap()).join("gn_out")
 }
 
-pub fn mode() -> String {
+pub fn is_debug() -> bool {
   // Cargo sets PROFILE to either "debug" or "release", which conveniently
   // matches the build modes we support.
   let m = env::var("PROFILE").unwrap();
-  String::from(if m == "release" {
-    "release"
+  if m == "release" {
+    false
   } else if m == "debug" {
-    "debug"
+    true
   } else {
     panic!("unhandled PROFILE value {}", m)
-  })
+  }
 }
 
 /// build.rs does not get re-run unless we tell cargo about what files we

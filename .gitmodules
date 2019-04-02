@@ -2,5 +2,5 @@
 	path = gn
 	url = https://gn.googlesource.com/gn
 [submodule "build"]
-	path = examples/cargo_gn_example/build
+	path = example/build
 	url = https://github.com/timniederhausen/gn-build

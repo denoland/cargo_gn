@@ -1,0 +1,26 @@
+group("default") {
+  deps = [
+    ":hello",
+    ":foo",
+  ]
+}
+
+executable("foo") {
+  sources = [
+    "foo.cc",
+  ]
+  deps = [ ":hello" ]
+}
+
+
+static_library("hello") {
+  sources = [
+    "hello.cc",
+    "hello.h",
+  ]
+  if (is_debug) {
+    defines = [ "IS_DEBUG=1" ]
+  } else {
+    defines = [ "IS_RELEASE=1" ]
+  }
+}

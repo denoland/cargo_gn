@@ -1,53 +1,87 @@
 mod prebuild;
 pub use prebuild::*;
-use std::env;
+use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
 
 static GN_PATH: &'static str = env!("GN_PATH");
-static CARGO_GN_ROOT: &'static str = env!("CARGO_GN_ROOT");
+pub static CARGO_GN_ROOT: &'static str = env!("CARGO_GN_ROOT");
 
 pub fn gn_path() -> PathBuf {
   PathBuf::from(GN_PATH)
 }
 
-pub fn build(root: &str, target: &str, release_args: &str, debug_args: &str) {
-  println!("hello from cargo_gn::build");
+pub struct Config {
+  root: String,
+  target: String,
+  release_args: String,
+  debug_args: String,
+}
 
-  // let default_dotfile = PathBuf::from(CARGO_GN_ROOT).join("default.gn");
-  // assert!(default_dotfile.exists());
+impl Default for Config {
+  fn default() -> Self {
+    Self {
+      root: ".".to_string(),
+      target: "default".to_string(),
+      release_args: "is_debug=false".to_string(),
+      debug_args: "is_debug=true".to_string(),
+    }
+  }
+}
 
+pub fn main() {
+  build(&Config::default())
+}
+
+fn write_args(path: &PathBuf, contents: &str) {
+  fs::write(path, contents).expect("Unable to write args.gn");
+}
+
+pub fn build(c: &Config) {
   let gn_out_dir = out_dir();
   println!("gn_out_dir {}", gn_out_dir.display());
 
   let gn = gn_path();
   assert!(gn.exists());
 
-  //println!("current_dir {}", env::current_dir().unwrap().display());
-
   let status = Command::new(&gn)
-    //.arg(format!("--root={}", root))
-    //.arg(format!("--dotfile={}", default_dotfile.display()))
+    .arg(format!("--root={}", c.root))
     .arg("gen")
     .arg(&gn_out_dir)
     .status()
     .expect("gn gen failed");
   assert!(status.success());
 
+  let args = if is_debug() {
+    &c.debug_args
+  } else {
+    &c.release_args
+  };
+  write_args(&gn_out_dir.join("args.gn"), args);
 
   let status = Command::new("ninja")
-      .arg("-C")
-      .arg(&gn_out_dir)
-      .arg(target)
-      .status()
-      .expect("ninja failed");
+    .arg("-C")
+    .arg(&gn_out_dir)
+    .arg(&c.target)
+    .status()
+    .expect("ninja failed");
   assert!(status.success());
+
+  // TODO This is not sufficent. We need to use "gn desc" to query the target
+  // and figure out what else we need to add to the link.
+  println!(
+    "cargo:rustc-link-search=native={}/obj/",
+    gn_out_dir.display()
+  );
 }
 
 #[cfg(test)]
 mod tests {
+  use super::*;
+
   #[test]
-  fn it_works() {
-    assert_eq!(2 + 2, 4);
+  fn gn_path_exists() {
+    let gn = gn_path();
+    assert!(gn.exists());
   }
 }

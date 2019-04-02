@@ -1,6 +1,6 @@
+use std::env;
 use std::fs;
 use std::process::Command;
-use std::env;
 
 mod cargo_gn {
   include!("src/prebuild.rs");
@@ -9,16 +9,20 @@ mod cargo_gn {
 fn main() {
   // Build gn itself. We don't want to rely on users having it already installed
   // because it's not standard.
-  let gn_mode = cargo_gn::mode();
   let out_dir = cargo_gn::out_dir();
 
   // TODO(ry) Use gn/build/gn.py --platform for cross compiling.
+  let out_path_arg = format!("--out-path={}", out_dir.display());
+  let mut gen_args = vec![
+    "./gn/build/gen.py",
+    "--no-last-commit-position",
+    &out_path_arg,
+  ];
+  if cargo_gn::is_debug() {
+    gen_args.push("--debug");
+  }
   let status = Command::new("python")
-    .arg("./gn/build/gen.py")
-    .arg("--no-last-commit-position")
-    .arg("--out-path")
-    .arg(&out_dir)
-    .arg(if gn_mode == "debug" { "--debug" } else { "" })
+    .args(gen_args)
     .status()
     .expect("gn/build/gen.py failed");
   assert!(status.success());
@@ -46,5 +50,8 @@ fn main() {
   assert!(gn_path.exists());
 
   println!("cargo:rustc-env=GN_PATH={}", gn_path.display());
-  println!("cargo:rustc-env=CARGO_GN_ROOT={}", env::current_dir().unwrap().display());
+  println!(
+    "cargo:rustc-env=CARGO_GN_ROOT={}",
+    env::current_dir().unwrap().display()
+  );
 }
