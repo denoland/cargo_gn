@@ -5,10 +5,15 @@ use std::path::PathBuf;
 use std::process::Command;
 
 static GN_PATH: &'static str = env!("GN_PATH");
+static NINJA_PATH: &'static str = env!("NINJA_PATH");
 pub static CARGO_GN_ROOT: &'static str = env!("CARGO_GN_ROOT");
 
 pub fn gn_path() -> PathBuf {
   PathBuf::from(GN_PATH)
+}
+
+pub fn ninja_path() -> PathBuf {
+  PathBuf::from(NINJA_PATH)
 }
 
 pub struct Config {
@@ -38,13 +43,9 @@ fn write_args(path: &PathBuf, contents: &str) {
 }
 
 pub fn build(c: &Config) {
-  let gn_out_dir = out_dir();
-  println!("gn_out_dir {}", gn_out_dir.display());
+  let gn_out_dir = out_dir().join("gn_out");
 
-  let gn = gn_path();
-  assert!(gn.exists());
-
-  let status = Command::new(&gn)
+  let status = Command::new(gn_path())
     .arg(format!("--root={}", c.root))
     .arg("gen")
     .arg(&gn_out_dir)
@@ -59,7 +60,7 @@ pub fn build(c: &Config) {
   };
   write_args(&gn_out_dir.join("args.gn"), args);
 
-  let status = Command::new("ninja")
+  let status = Command::new(ninja_path())
     .arg("-C")
     .arg(&gn_out_dir)
     .arg(&c.target)
@@ -80,8 +81,12 @@ mod tests {
   use super::*;
 
   #[test]
-  fn gn_path_exists() {
-    let gn = gn_path();
-    assert!(gn.exists());
+  fn gn_exists() {
+    assert!(gn_path().exists());
+  }
+
+  #[test]
+  fn ninja_exists() {
+    assert!(ninja_path().exists());
   }
 }

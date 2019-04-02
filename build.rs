@@ -1,5 +1,6 @@
 use std::env;
 use std::fs;
+use std::path::PathBuf;
 use std::process::Command;
 
 mod cargo_gn {
@@ -7,10 +8,32 @@ mod cargo_gn {
 }
 
 fn main() {
-  // Build gn itself. We don't want to rely on users having it already installed
-  // because it's not standard.
   let out_dir = cargo_gn::out_dir();
+  let ninja_path = build_ninja(&out_dir.join("ninja_out"));
+  build_gn(&out_dir.join("gn_out"), &ninja_path);
+}
 
+fn build_ninja(out_dir: &PathBuf) -> PathBuf {
+  if !out_dir.exists() {
+    fs::create_dir_all(&out_dir).expect("create_dir_all");
+  }
+
+  let cargo_gn_root = env::current_dir().unwrap();
+  let configure = cargo_gn_root.join("ninja/configure.py");
+  let status = Command::new("python")
+    .arg(configure)
+    .arg("--bootstrap")
+    .current_dir(&out_dir)
+    .status()
+    .expect("ninja/configure.py failed");
+  assert!(status.success());
+
+  let ninja_path = out_dir.join("ninja");
+  println!("cargo:rustc-env=NINJA_PATH={}", ninja_path.display());
+  ninja_path
+}
+
+fn build_gn(out_dir: &PathBuf, ninja: &PathBuf) {
   // TODO(ry) Use gn/build/gn.py --platform for cross compiling.
   let out_path_arg = format!("--out-path={}", out_dir.display());
   let mut gen_args = vec![
@@ -36,7 +59,7 @@ fn main() {
   }
 
   // Build gn itself.
-  let status = Command::new("ninja")
+  let status = Command::new(ninja)
     .arg("-C")
     .arg(&out_dir)
     .arg("gn")
@@ -44,7 +67,7 @@ fn main() {
     .expect("ninja failed");
   assert!(status.success());
 
-  cargo_gn::rerun_if_changed(&out_dir);
+  cargo_gn::rerun_if_changed(&ninja, &out_dir);
 
   let gn_path = out_dir.join("gn");
   assert!(gn_path.exists());
