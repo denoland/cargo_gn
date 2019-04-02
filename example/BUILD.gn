@@ -1,22 +1,23 @@
 group("default") {
   deps = [
-    ":hello",
     ":foo",
+    ":hello",
   ]
 }
 
 executable("foo") {
   sources = [
-    "foo.cc",
+    "src/foo.cc",
   ]
-  deps = [ ":hello" ]
+  deps = [
+    ":hello",
+  ]
 }
-
 
 static_library("hello") {
   sources = [
-    "hello.cc",
-    "hello.h",
+    "src/hello.cc",
+    "src/hello.h",
   ]
   if (is_debug) {
     defines = [ "IS_DEBUG=1" ]

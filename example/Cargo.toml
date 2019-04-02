@@ -4,5 +4,7 @@ version = "0.0.1"
 authors = ["Ryan Dahl <ry@tinyclouds.org>"]
 edition = "2018"
 
+build = "src/build.rs"
+
 [build-dependencies]
 cargo_gn = { path = "../" }
