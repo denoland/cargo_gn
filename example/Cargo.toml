@@ -1,5 +1,5 @@
 [package]
-name = "cargo-gn-example"
+name = "cargo_gn_example"
 version = "0.0.1"
 authors = ["Ryan Dahl <ry@tinyclouds.org>"]
 edition = "2018"
