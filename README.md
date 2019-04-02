@@ -2,6 +2,8 @@
 
 [![Build Status](https://dev.azure.com/denoland/cargo_gn/_apis/build/status/denoland.cargo_gn?branchName=master)](https://dev.azure.com/denoland/cargo_gn/_build/latest?definitionId=3&branchName=master)
 
+https://crates.io/crates/cargo_gn
+
 This package allows Rust users to quickly hook into the GN build system.
 It provides built-in gn and ninja tools that hook semi-automatically into
 Cargo's `build.rs`.
@@ -10,7 +12,7 @@ Put the following in your `Cargo.toml`
 
 ```toml
 [build-dependencies]
-cargo_gn = "0.0.4"
+cargo_gn = "0.0.5"
 ```
 
 And put this exact code in your `build.rs`

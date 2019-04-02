@@ -1,11 +1,11 @@
 [[package]]
 name = "cargo_gn"
-version = "0.0.3"
+version = "0.0.5"
 
 [[package]]
 name = "cargo_gn_example"
 version = "0.0.1"
 dependencies = [
- "cargo_gn 0.0.3",
+ "cargo_gn 0.0.5",
 ]
 
