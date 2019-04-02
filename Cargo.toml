@@ -1,6 +1,6 @@
 [package]
 name = "cargo_gn"
-version = "0.0.4"
+version = "0.0.5"
 authors = ["Ryan Dahl <ry@tinyclouds.org>"]
 edition = "2018"
 repository = "https://github.com/denoland/cargo_gn"
