@@ -7,4 +7,10 @@ edition = "2018"
 description = "Cargo integration with the GN build system"
 license = "MIT"
 
+[workspace]
+members = [
+  "examples/cargo_gn_example",
+  ".",
+]
+
 [dependencies]

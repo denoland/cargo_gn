@@ -1,0 +1,10 @@
+[package]
+name = "cargo-gn-example"
+version = "0.0.1"
+authors = ["Ryan Dahl <ry@tinyclouds.org>"]
+edition = "2018"
+
+[dependencies]
+
+[build-dependencies]
+cargo_gn = { path = "../.." }

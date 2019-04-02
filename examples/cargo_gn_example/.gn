@@ -1,0 +1,3 @@
+# Default .gn file in case users don't have one
+# Uses https://github.com/timniederhausen/gn-build
+buildconfig = "//build/config/BUILDCONFIG.gn"
