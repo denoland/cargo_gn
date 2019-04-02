@@ -1,3 +1,6 @@
+variables:
+  RUST_BACKTRACE: full
+
 pool:
   vmImage: 'ubuntu-16.04'
 
@@ -11,6 +14,8 @@ steps:
   - script: |
       curl https://sh.rustup.rs -sSf | sh -s -- -y
     displayName: Install ninja
+  - script: find . -type f
+    displayName: find .
   - script: cargo build -vv --all
     displayName: Cargo build
   - script: cargo test -vv --all
