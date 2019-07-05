@@ -4,13 +4,13 @@ use std::path::PathBuf;
 use std::process::Command;
 
 mod cargo_gn {
-  include!("src/prebuild.rs");
+  include!("prebuild.rs");
 }
 
 fn main() {
   let out_dir = cargo_gn::out_dir();
-  let ninja_path = build_ninja(&out_dir.join("ninja_out"));
-  build_gn(&out_dir.join("gn_out"), &ninja_path);
+  let ninja_path = build_ninja(&out_dir.join("_ninja_out"));
+  build_gn(&out_dir.join("_gn_out"), &ninja_path);
 }
 
 fn build_ninja(out_dir: &PathBuf) -> PathBuf {

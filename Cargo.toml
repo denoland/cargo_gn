@@ -8,6 +8,8 @@ readme = "README.md"
 description = "Cargo integration with the GN build system"
 license = "MIT"
 
+build = "src/build.rs"
+
 [workspace]
 members = [
   "example",
