@@ -8,7 +8,12 @@ use std::process::Command;
 
 pub fn out_dir() -> PathBuf {
   let out_dir = env::var("OUT_DIR").unwrap();
-  PathBuf::from(out_dir)
+  let r = PathBuf::from(out_dir)
+    .join("../../..")
+    .canonicalize()
+    .unwrap();
+  println!("outdir {:?}", r);
+  r
 }
 
 pub fn is_debug() -> bool {

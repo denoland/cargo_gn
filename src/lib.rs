@@ -17,10 +17,10 @@ pub fn ninja_path() -> PathBuf {
 }
 
 pub struct Config {
-  root: String,
-  target: String,
-  release_args: String,
-  debug_args: String,
+  pub root: String,
+  pub target: String,
+  pub release_args: String,
+  pub debug_args: String,
 }
 
 impl Default for Config {
@@ -32,6 +32,12 @@ impl Default for Config {
       debug_args: "is_debug=true".to_string(),
     }
   }
+}
+
+pub fn build2(target: &str) {
+  let mut c = Config::default();
+  c.target = target.to_string();
+  build(&c)
 }
 
 pub fn main() {

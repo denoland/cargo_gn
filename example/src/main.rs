@@ -22,7 +22,7 @@ mod tests {
 
   #[test]
   fn run_foo_executable() {
-    let foo = PathBuf::from(env!("OUT_DIR")).join("gn_out/foo");
+    let foo = PathBuf::from(env!("OUT_DIR")).join("../../../gn_out/foo");
     assert!(foo.exists());
     let output = Command::new(foo).output().expect("foo failed");
     if cfg!(debug_assertions) {

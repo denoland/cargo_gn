@@ -31,3 +31,9 @@ https://github.com/denoland/cargo_gn/tree/master/example
 Use `cargo build -vv` in order to see ninja output.
 
 Read more about gn here: https://gn.googlesource.com/gn
+
+To test:
+
+```
+RUSTC_WRAPPER=sccache CXX="sccache clang++"  cargo test -vv --all
+```
