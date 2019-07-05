@@ -15,15 +15,6 @@ Put the following in your `Cargo.toml`
 cargo_gn = "0.0.5"
 ```
 
-And put this exact code in your `build.rs`
-
-```rust
-use cargo_gn;
-fn main() {
-  cargo_gn::main()
-}
-```
-
 Now you should be able to add a `.gn` file in the root of your project and
 start using `BUILD.gn`. See the example directory for a complete example:
 https://github.com/denoland/cargo_gn/tree/master/example

@@ -1,3 +1,5 @@
+#![deny(warnings)]
+
 #[link(name = "hello")]
 extern "C" {
   fn hello();
