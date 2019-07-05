@@ -12,7 +12,6 @@ pub fn out_dir() -> PathBuf {
     .join("../../..")
     .canonicalize()
     .unwrap();
-  println!("outdir {:?}", r);
   r
 }
 

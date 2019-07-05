@@ -10,6 +10,9 @@ license = "MIT"
 
 build = "src/build.rs"
 
+[dependencies]
+which = "2.0.1"
+
 [workspace]
 members = [
   "example",
