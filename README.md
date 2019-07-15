@@ -1,6 +1,6 @@
 # Cargo GN integration
 
-[![Build Status](https://dev.azure.com/denoland/cargo_gn/_apis/build/status/denoland.cargo_gn?branchName=master)](https://dev.azure.com/denoland/cargo_gn/_build/latest?definitionId=3&branchName=master)
+[![Build Status](https://dev.azure.com/denoland/cargo_gn/_apis/build/status/denoland.cargo_gn%20(1)?branchName=master)](https://dev.azure.com/denoland/cargo_gn/_build/latest?definitionId=6&branchName=master)
 
 https://crates.io/crates/cargo_gn
 
