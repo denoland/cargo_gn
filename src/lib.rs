@@ -25,7 +25,7 @@ pub fn maybe_gen(root: &str, debug_args: &str, release_args: &str) -> PathBuf {
 
   if !gn_out_dir.exists() {
     let args = if is_debug() { debug_args } else { release_args };
-    write_args(&gn_out_dir.join("args.gn"), args);
+    write_args(&gn_out_dir, args);
 
     let status = Command::new(gn_path())
       .arg(format!("--root={}", root))
@@ -61,7 +61,8 @@ pub fn build(target: &str) {
 }
 
 fn write_args(path: &PathBuf, contents: &str) {
-  fs::write(path, contents).expect("Unable to write args.gn");
+  fs::create_dir_all(path).expect("Unable to create gn_out directory");
+  fs::write(path.join("args.gn"), contents).expect("Unable to write args.gn");
 }
 
 #[cfg(test)]
