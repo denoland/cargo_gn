@@ -24,6 +24,9 @@ pub fn maybe_gen(root: &str, debug_args: &str, release_args: &str) -> PathBuf {
   let gn_out_dir = out_dir().join("gn_out");
 
   if !gn_out_dir.exists() {
+    let args = if is_debug() { debug_args } else { release_args };
+    write_args(&gn_out_dir.join("args.gn"), args);
+
     let status = Command::new(gn_path())
       .arg(format!("--root={}", root))
       .arg("gen")
@@ -31,9 +34,6 @@ pub fn maybe_gen(root: &str, debug_args: &str, release_args: &str) -> PathBuf {
       .status()
       .expect("gn gen failed");
     assert!(status.success());
-
-    let args = if is_debug() { debug_args } else { release_args };
-    write_args(&gn_out_dir.join("args.gn"), args);
   }
   return gn_out_dir;
 }
