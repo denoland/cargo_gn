@@ -78,8 +78,6 @@ fn build_gn(out_dir: &PathBuf, ninja_path: &str) -> String {
     .expect("ninja failed");
   assert!(status.success());
 
-  cargo_gn::rerun_if_changed(&PathBuf::from(ninja_path), &out_dir);
-
   let gn_path = out_dir.join("gn");
   assert!(gn_path.exists());
 
