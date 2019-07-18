@@ -12,7 +12,7 @@ Put the following in your `Cargo.toml`
 
 ```toml
 [build-dependencies]
-cargo_gn = "0.0.5"
+cargo_gn = "0.0.9"
 ```
 
 Now you should be able to add a `.gn` file in the root of your project and
@@ -22,12 +22,6 @@ https://github.com/denoland/cargo_gn/tree/master/example
 Use `cargo build -vv` in order to see ninja output.
 
 Read more about gn here: https://gn.googlesource.com/gn
-
-To test:
-
-```
-RUSTC_WRAPPER=sccache CXX="sccache clang++"  cargo test -vv --all
-```
 
 By default this crate builds gn and ninja. If you want to provide your own
 gn/ninja binaries and not build them from scratch, specify the `CARGO_GN_PATH`
