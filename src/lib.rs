@@ -2,6 +2,7 @@
 
 mod prebuild;
 pub use prebuild::*;
+use std::collections::HashSet;
 use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
@@ -34,7 +35,7 @@ pub fn maybe_gen(root: &str, debug_args: &str, release_args: &str) -> PathBuf {
       .expect("gn gen failed");
     assert!(status.success());
   }
-  return gn_out_dir;
+  gn_out_dir
 }
 
 pub fn build(target: &str) {
@@ -51,12 +52,48 @@ pub fn build(target: &str) {
     .expect("ninja failed");
   assert!(status.success());
 
+  rerun_if_changed(&ninja_path(), &gn_out_dir, target);
+
   // TODO This is not sufficent. We need to use "gn desc" to query the target
   // and figure out what else we need to add to the link.
   println!(
     "cargo:rustc-link-search=native={}/obj/",
     gn_out_dir.display()
   );
+}
+
+/// build.rs does not get re-run unless we tell cargo about what files we
+/// depend on. This outputs a bunch of rerun-if-changed lines to stdout.
+fn rerun_if_changed(ninja_path: &PathBuf, out_dir: &PathBuf, target: &str) {
+  // TODO(ry) `ninja -t deps` isn't sufficent. It doesn't capture runtime deps.
+  let deps = ninja_get_deps(ninja_path, out_dir, target);
+  for d in deps {
+    // TODO(ry) Assert each file exists.
+    println!("cargo:rerun-if-changed={}", d);
+  }
+}
+
+fn ninja_get_deps(
+  ninja_path: &PathBuf,
+  out_dir: &PathBuf,
+  target: &str,
+) -> HashSet<String> {
+  let output = Command::new(ninja_path)
+    .arg("-C")
+    .arg(out_dir)
+    .arg(target)
+    .arg("-t")
+    .arg("deps")
+    .output()
+    .expect("ninja failed");
+  let stdout = String::from_utf8(output.stdout).unwrap();
+  let mut files = HashSet::new();
+  for line in stdout.lines() {
+    if line.starts_with("  ") {
+      files.insert(line.trim().to_string());
+    }
+  }
+  files
 }
 
 fn write_args(path: &PathBuf, contents: &str) {
