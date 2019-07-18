@@ -1,5 +1,3 @@
-#![deny(warnings)]
-
 mod prebuild;
 pub use prebuild::*;
 use std::collections::HashSet;
