@@ -22,7 +22,7 @@ dependencies = [
 
 [[package]]
 name = "cargo_gn"
-version = "0.0.9"
+version = "0.0.10"
 dependencies = [
  "which 2.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -31,7 +31,7 @@ dependencies = [
 name = "cargo_gn_example"
 version = "0.0.1"
 dependencies = [
- "cargo_gn 0.0.9",
+ "cargo_gn 0.0.10",
 ]
 
 [[package]]
