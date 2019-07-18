@@ -9,7 +9,6 @@ pub use which::which;
 
 static GN_PATH: &'static str = env!("GN_PATH");
 static NINJA_PATH: &'static str = env!("NINJA_PATH");
-pub static CARGO_GN_ROOT: &'static str = env!("CARGO_GN_ROOT");
 
 pub fn gn_path() -> PathBuf {
   PathBuf::from(GN_PATH)

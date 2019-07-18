@@ -1,6 +1,6 @@
 # Cargo GN integration
 
-[![Build Status](https://dev.azure.com/denoland/cargo_gn/_apis/build/status/denoland.cargo_gn%20(1)?branchName=master)](https://dev.azure.com/denoland/cargo_gn/_build/latest?definitionId=6&branchName=master)
+[![Build Status](<https://dev.azure.com/denoland/cargo_gn/_apis/build/status/denoland.cargo_gn%20(1)?branchName=master>)](https://dev.azure.com/denoland/cargo_gn/_build/latest?definitionId=6&branchName=master)
 
 https://crates.io/crates/cargo_gn
 
@@ -28,3 +28,7 @@ To test:
 ```
 RUSTC_WRAPPER=sccache CXX="sccache clang++"  cargo test -vv --all
 ```
+
+By default this crate builds gn and ninja. If you want to provide your own
+gn/ninja binaries and not build them from scratch, specify the `CARGO_GN_PATH`
+or `CARGO_NINJA_PATH` environmental variables.

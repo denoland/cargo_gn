@@ -9,11 +9,22 @@ mod cargo_gn {
 
 fn main() {
   let out_dir = cargo_gn::out_dir();
-  let ninja_path = build_ninja(&out_dir.join("_ninja_out"));
-  build_gn(&out_dir.join("_gn_out"), &ninja_path);
+
+  let ninja_path = match env::var("CARGO_NINJA_PATH") {
+    Ok(val) => val,
+    Err(_err) => build_ninja(&out_dir.join("_ninja_out")),
+  };
+
+  let gn_path = match env::var("CARGO_GN_PATH") {
+    Ok(val) => val,
+    Err(_err) => build_gn(&out_dir.join("_gn_out"), &ninja_path),
+  };
+
+  println!("cargo:rustc-env=NINJA_PATH={}", ninja_path);
+  println!("cargo:rustc-env=GN_PATH={}", gn_path);
 }
 
-fn build_ninja(out_dir: &PathBuf) -> PathBuf {
+fn build_ninja(out_dir: &PathBuf) -> String {
   if !out_dir.exists() {
     fs::create_dir_all(&out_dir).expect("create_dir_all");
   }
@@ -30,11 +41,10 @@ fn build_ninja(out_dir: &PathBuf) -> PathBuf {
   assert!(status.success());
 
   let ninja_path = out_dir.join("ninja");
-  println!("cargo:rustc-env=NINJA_PATH={}", ninja_path.display());
-  ninja_path
+  ninja_path.into_os_string().into_string().unwrap()
 }
 
-fn build_gn(out_dir: &PathBuf, ninja: &PathBuf) {
+fn build_gn(out_dir: &PathBuf, ninja_path: &str) -> String {
   // TODO(ry) Use gn/build/gn.py --platform for cross compiling.
   let out_path_arg = format!("--out-path={}", out_dir.display());
   let mut gen_args = vec![
@@ -60,7 +70,7 @@ fn build_gn(out_dir: &PathBuf, ninja: &PathBuf) {
   }
 
   // Build gn itself.
-  let status = Command::new(ninja)
+  let status = Command::new(ninja_path)
     .arg("-C")
     .arg(&out_dir)
     .arg("gn")
@@ -68,14 +78,10 @@ fn build_gn(out_dir: &PathBuf, ninja: &PathBuf) {
     .expect("ninja failed");
   assert!(status.success());
 
-  cargo_gn::rerun_if_changed(&ninja, &out_dir);
+  cargo_gn::rerun_if_changed(&PathBuf::from(ninja_path), &out_dir);
 
   let gn_path = out_dir.join("gn");
   assert!(gn_path.exists());
 
-  println!("cargo:rustc-env=GN_PATH={}", gn_path.display());
-  println!(
-    "cargo:rustc-env=CARGO_GN_ROOT={}",
-    env::current_dir().unwrap().display()
-  );
+  gn_path.into_os_string().into_string().unwrap()
 }
