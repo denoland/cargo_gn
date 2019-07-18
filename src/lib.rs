@@ -3,7 +3,6 @@ use std::env;
 use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
-pub use which::which;
 
 pub fn out_dir() -> PathBuf {
   // The OUT_DIR is going to be a crate-specific directory like

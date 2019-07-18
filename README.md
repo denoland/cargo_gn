@@ -23,6 +23,5 @@ Use `cargo build -vv` in order to see ninja output.
 
 Read more about gn here: https://gn.googlesource.com/gn
 
-By default this crate builds gn and ninja. If you want to provide your own
-gn/ninja binaries and not build them from scratch, specify the `GN`
-or `NINJA` environmental variables.
+The GN/Ninja executables are assumed to be "gn" and "ninja" unless $GN and
+$NINJA environmental variables are set.
