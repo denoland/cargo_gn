@@ -6,11 +6,10 @@ use std::path::PathBuf;
 
 pub fn out_dir() -> PathBuf {
   let out_dir = env::var("OUT_DIR").unwrap();
-  let r = PathBuf::from(out_dir)
+  PathBuf::from(out_dir)
     .join("../../..")
     .canonicalize()
-    .unwrap();
-  r
+    .unwrap()
 }
 
 pub fn is_debug() -> bool {
