@@ -66,8 +66,9 @@ fn rerun_if_changed(ninja_path: &PathBuf, out_dir: &PathBuf, target: &str) {
   // TODO(ry) `ninja -t deps` isn't sufficent. It doesn't capture runtime deps.
   let deps = ninja_get_deps(ninja_path, out_dir, target);
   for d in deps {
-    // TODO(ry) Assert each file exists.
-    println!("cargo:rerun-if-changed={}", d);
+    let p = out_dir.join(d);
+    debug_assert!(p.exists());
+    println!("cargo:rerun-if-changed={}", p.display());
   }
 }
 
