@@ -1,9 +1,3 @@
-[submodule "gn"]
-	path = gn
-	url = https://gn.googlesource.com/gn
 [submodule "build"]
 	path = example/build
 	url = https://github.com/timniederhausen/gn-build
-[submodule "ninja"]
-	path = ninja
-	url = https://github.com/ninja-build/ninja
