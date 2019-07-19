@@ -16,7 +16,7 @@ steps:
 
       sudo apt install -y ninja
 
-      git clone https://gn.googlesource.com/gn --depth=1
+      git clone https://gn.googlesource.com/gn
       cd gn
       python build/gen.py
       ninja -C out
