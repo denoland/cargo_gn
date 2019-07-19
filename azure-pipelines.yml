@@ -14,7 +14,7 @@ steps:
     displayName: Install rust
 
   - script: |
-      sudo apt install -y ninja
+      sudo apt install -y ninja-build
     displayName: Install ninja
 
   - script: |
