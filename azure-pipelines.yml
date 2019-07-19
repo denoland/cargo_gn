@@ -18,14 +18,15 @@ steps:
       depot_tools/ninja
       export PATH="`pwd`/depot_tools:$PATH"
       #echo "##vso[task.prependpath]depot_tools"
-      ninja
-      gn help
-      echo "done"
       #depot_tools/gn
       #git clone -c http.extraheader="AUTHORIZATION: bearer $(System.AccessToken)" https://chromium.googlesource.com/chromium/tools/depot_tools.git
       #echo `which ninja`
       #echo `which gn`
       #echo "##vso[task.setvariable variable=PATH;]$PATH:$AGENT_BUILDDIRECTORY/depot_tools"
     displayName: Install depot_tools
-  - script: cargo test -vv --all
+  - script: |
+      ninja
+      gn help
+      echo "ninja/gn are ok"
+      cargo test -vv --all
     displayName: Cargo test
