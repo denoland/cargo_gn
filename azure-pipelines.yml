@@ -13,10 +13,10 @@ steps:
     displayName: Install rust
   - script: |
       echo "hello"
-      git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+      git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git --depth=1
       echo "world"
       depot_tools/ninja
-      echo "##vso[task.prependpath]$AGENT_BUILD_DIRECTORY/depot_tools"
+      echo "##vso[task.prependpath]depot_tools"
       gn help
       echo "done"
       #depot_tools/gn
