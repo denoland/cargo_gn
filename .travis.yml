@@ -28,10 +28,17 @@ install:
   rustc --version
   cargo --version
 - |-
+  # Remove unnnecessary cargo and rustup directories.
+  # This keeps the Travis CI cache small and fast.
+  rm -rf "$RUSTUP_HOME"downloads
+  rm -rf "$RUSTUP_HOME"tmp
+  rm -rf "$RUSTUP_HOME"toolchains/*/etc
+  rm -rf "$RUSTUP_HOME"toolchains/*/share
+- |-
   # Build Ninja
   if [ ! -d ninja ]; then
     git clone https://github.com/ninja-build/ninja.git --depth=1
-    python ./bootstrap.py
+    (cd ninja && python ./bootstrap.py)
   fi
 - |-
   # Build GN
@@ -41,13 +48,6 @@ install:
     python build/gen.py
     ninja -C out gn
   fi
-- |-
-  # Remove unnnecessary cargo and rustup directories.
-  # This keeps the Travis CI cache small and fast.
-  rm -rf "$RUSTUP_HOME"downloads
-  rm -rf "$RUSTUP_HOME"tmp
-  rm -rf "$RUSTUP_HOME"toolchains/*/etc
-  rm -rf "$RUSTUP_HOME"toolchains/*/share
 
 before_script:
 # Start sccache, then throw away the S3 access key.
