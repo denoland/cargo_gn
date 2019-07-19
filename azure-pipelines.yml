@@ -11,5 +11,9 @@ steps:
       curl https://sh.rustup.rs -sSf | sh -s -- -y
       echo "##vso[task.setvariable variable=PATH;]$PATH:$HOME/.cargo/bin"
     displayName: Install rust
+  - script: |
+      git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+      echo "##vso[task.setvariable variable=PATH;]$PATH:$AGENT_BUILDDIRECTORY/depot_tools"
+    displayName: Install depot_tools
   - script: ./test.sh
     displayName: Cargo test
