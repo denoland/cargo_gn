@@ -17,7 +17,7 @@ steps:
       echo "world"
       depot_tools/ninja
       export PATH="`pwd`/depot_tools:$PATH"
-      #echo "##vso[task.prependpath]depot_tools"
+      #echo "##vso[task.prependpath]$(system.defaultWorkingDirectory)/depot_tools"
       #depot_tools/gn
       #git clone -c http.extraheader="AUTHORIZATION: bearer $(System.AccessToken)" https://chromium.googlesource.com/chromium/tools/depot_tools.git
       #echo `which ninja`
