@@ -52,6 +52,7 @@ pub fn maybe_gen(root: &str, debug_args: &str, release_args: &str) -> PathBuf {
     let args = if is_debug() { debug_args } else { release_args };
     write_args(&gn_out_dir, args);
 
+    println!("gn gen --root={} {}", root, gn_out_dir.display());
     let status = Command::new(gn())
       .arg(format!("--root={}", root))
       .arg("gen")
