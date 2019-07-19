@@ -14,7 +14,10 @@ steps:
     displayName: Install rust
 
   - script: |
-      sudo apt install -y ninja-build
+      git clone https://github.com/ninja-build/ninja.git --depth=1
+      cd ninja
+      python ./bootstrap.py
+      echo "##vso[task.prependpath]$(system.defaultWorkingDirectory)/ninja"
     displayName: Install ninja
 
   - script: |
