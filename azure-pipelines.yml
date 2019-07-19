@@ -7,23 +7,24 @@ pool:
 steps:
   - checkout: self
     submodules: true
+
   - script: |
       curl https://sh.rustup.rs -sSf | sh -s -- -y
       echo "##vso[task.setvariable variable=PATH;]$PATH:$HOME/.cargo/bin"
     displayName: Install rust
+
   - script: |
-      mkdir -p $HOME/bin
-
       sudo apt install -y ninja
+    displayName: Install ninja
 
+  - script: |
       git clone https://gn.googlesource.com/gn
       cd gn
       python build/gen.py
       ninja -C out
-      cp -f out/gn $HOME/bin
+      echo "##vso[task.prependpath]$(system.defaultWorkingDirectory)/out"
+    displayName: build gn
 
-      echo "##vso[task.prependpath]$(HOME)/bin"
-    displayName: Install depot_tools
   - script: |
       echo "ninja $(which ninja) gn $(which gn)"
       cargo test -vv --all
