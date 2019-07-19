@@ -1,0 +1,69 @@
+# Copyright 2018-2019 the Deno authors. All rights reserved. MIT license.
+sudo: false
+language: c++
+git:
+  depth: 1
+env:
+  global:
+  - RUST_VERSION=1.36.0
+  - CARGO_HOME=$TRAVIS_BUILD_DIR/third_party/rust_crates/
+  - RUSTUP_HOME=$HOME/.rustup/
+  - RUST_BACKTRACE=full
+  - CARGO_TARGET_DIR=$HOME/target
+  - PATH=$CARGO_HOME/bin:$HOME/ninja:$HOME/gn/out:$PATH
+  - RUSTC_WRAPPER=sccache
+  - SCCACHE_BUCKET=deno-sccache
+  - AWS_ACCESS_KEY_ID=AKIAIVRN52PLDBP55LBQ
+  # AWS_SECRET_ACCESS_KEY=...
+  - secure: "ugSLNiUOQs53Oyy78EQyr2bu+//uoskbuoucenUUHM5I11M15yq1XuBJ26fIK1Jatza9pOGJNI8+4dSMWZW1GMFqgOZTKXv4kZFqU915/L1gsfS2bljB8pD1Qoq68ieGCQ49vBSFOWP24gtWBfKVJqU3HGHJgA5Ia/ujW3e37jr20xGqaBEcTjgin2fjm7VTao+hOOAMf47YkZNTEuLEHVPbDZM2tCCSlUdLpdyPB6mzX7XVmRxO26mtaHEeecivtaS6xXJXmns7OkntOzwgJi46B5uMgZz42UZ9qy1fCq8yCOyADb/Hu2WaJm7MIehHVhdC/siRzUUSOJ4N9gOPaFFAy5D28sDEa/IvlVriOwXirmDdPSlkTpwZ1NiisZXdZMaK6CWroaCHv9hYrJ7wKcntLQjLnnnskcyqxIVC7uEdlKHyLTNziyxol6oU/2Ym1NDoYWPDzcIeCkCr+xBapLXTVcg60YvcL/h+6wy5rp1v2h9R5B8HCCvmyc2X/FyaAmi8P7DYYHQL8+g+B0nGmzrrSGJzsEL7vChyiKfeNG7nnJKrU1+V8/+bPGsuPOK1XDTx80Uq56EzjHUPXy59zqtYL7ZZAIL0BQPxgm43yUCJfYSIKiwB9Odu+vb2DLDk5CLi45OHh2K7yi9m/lxlXla945az5OYO2l7a5m7rWF8="
+cache:
+  directories:
+  - "$RUSTUP_HOME"
+  - $CARGO_HOME/registry/index/
+  - $CARGO_HOME/registry/cache/
+  - ninja
+  - gn
+
+install:
+- |-
+  # Install Rust.
+  if [ ! $(rustc --version | grep $RUST_VERSION) ]; then
+    curl -sSf https://sh.rustup.rs | sh -s -- -y \
+      --default-toolchain $RUST_VERSION
+    rustup default $RUST_VERSION
+    rustup component add clippy
+  fi
+  rustc --version
+  cargo --version
+  cargo install sccache
+- |-
+  # Build Ninja
+  if [ ! -d ninja ]; then
+    git clone https://github.com/ninja-build/ninja.git --depth=1
+    python ./bootstrap.py
+  fi
+- |-
+  # Build GN
+  if [ ! -d gn ]; then
+    git clone https://gn.googlesource.com/gn
+    cd gn
+    python build/gen.py
+    ninja -C out gn
+  fi
+- |-
+  # Remove unnnecessary cargo and rustup directories.
+  # This keeps the Travis CI cache small and fast.
+  rm -rf "$RUSTUP_HOME"downloads
+  rm -rf "$RUSTUP_HOME"tmp
+  rm -rf "$RUSTUP_HOME"toolchains/*/etc
+  rm -rf "$RUSTUP_HOME"toolchains/*/share
+
+before_script:
+# Start sccache, then throw away the S3 access key.
+- |-
+  sccache --start-server
+  unset AWS_SECRET_ACCESS_KEY
+- set -e
+
+script:
+- cargo test --all -vv
