@@ -11,7 +11,6 @@ env:
   - RUST_BACKTRACE=full
   - CARGO_TARGET_DIR=$HOME/target
   - PATH=$CARGO_HOME/bin:$HOME/ninja:$HOME/gn/out:$PATH
-  - RUSTC_WRAPPER=sccache
   - SCCACHE_BUCKET=deno-sccache
   - AWS_ACCESS_KEY_ID=AKIAIVRN52PLDBP55LBQ
   # AWS_SECRET_ACCESS_KEY=...
@@ -36,6 +35,7 @@ install:
   rustc --version
   cargo --version
   cargo install sccache
+  export RUSTC_WRAPPER=sccache
 - |-
   # Build Ninja
   if [ ! -d ninja ]; then
