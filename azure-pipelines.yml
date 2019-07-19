@@ -21,8 +21,8 @@ steps:
       git clone https://gn.googlesource.com/gn
       cd gn
       python build/gen.py
-      ninja -C out
-      echo "##vso[task.prependpath]$(system.defaultWorkingDirectory)/out"
+      ninja -C out gn
+      echo "##vso[task.prependpath]$(system.defaultWorkingDirectory)/gn/out"
     displayName: build gn
 
   - script: |
