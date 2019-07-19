@@ -12,8 +12,21 @@ steps:
       echo "##vso[task.setvariable variable=PATH;]$PATH:$HOME/.cargo/bin"
     displayName: Install rust
   - script: |
-      git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git --depth=1
-      echo "##vso[task.prependpath]$(system.defaultWorkingDirectory)/depot_tools"
+      mkdir -p $HOME/bin
+
+      git clone https://github.com/ninja-build/ninja.git --depth=1
+      cd ninja
+      ./configure.py --bootstrap
+      cp -f ninja $HOME/bin/
+      cd ..
+
+      git clone https://gn.googlesource.com/gn --depth=1
+      cd gn
+      python build/gen.py
+      ninja -C out
+      cp -f out/gn $HOME/bin
+
+      echo "##vso[task.prependpath]$(HOME)/bin"
     displayName: Install depot_tools
   - script: |
       echo "ninja $(which ninja) gn $(which gn)"
