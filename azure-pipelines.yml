@@ -14,11 +14,7 @@ steps:
   - script: |
       mkdir -p $HOME/bin
 
-      git clone https://github.com/ninja-build/ninja.git --depth=1
-      cd ninja
-      ./configure.py --bootstrap
-      cp -f ninja $HOME/bin/
-      cd ..
+      sudo apt install -y ninja
 
       git clone https://gn.googlesource.com/gn --depth=1
       cd gn
