@@ -55,13 +55,11 @@ pub fn maybe_gen(root: &str, debug_args: &str, release_args: &str) -> PathBuf {
     let path = env::current_dir().unwrap();
     println!("The current directory is {}", path.display());
     println!("gn gen --root={} {}", root, gn_out_dir.display());
-    let status = Command::new(gn())
-      .arg(format!("--root={}", root))
-      .arg("gen")
-      .arg(&gn_out_dir)
-      .status()
-      .expect("gn gen failed");
-    assert!(status.success());
+    let mut cmd = Command::new(gn());
+    cmd.arg(format!("--root={}", root));
+    cmd.arg("gen");
+    cmd.arg(&gn_out_dir);
+    run(&mut cmd, "gn gen");
   }
   gn_out_dir
 }
@@ -72,13 +70,11 @@ pub fn build(target: &str) {
   // This helps Rust source files locate the snapshot, source map etc.
   println!("cargo:rustc-env=GN_OUT_DIR={}", gn_out_dir.display());
 
-  let status = Command::new(ninja())
-    .arg("-C")
-    .arg(&gn_out_dir)
-    .arg(target)
-    .status()
-    .expect("ninja failed");
-  assert!(status.success());
+  let mut cmd = Command::new(ninja());
+  cmd.arg("-C");
+  cmd.arg(&gn_out_dir);
+  cmd.arg(target);
+  run(&mut cmd, "ninja");
 
   rerun_if_changed(&gn_out_dir, target);
 
@@ -124,4 +120,29 @@ fn ninja_get_deps(out_dir: &PathBuf, target: &str) -> HashSet<String> {
 fn write_args(path: &PathBuf, contents: &str) {
   fs::create_dir_all(path).expect("Unable to create gn_out directory");
   fs::write(path.join("args.gn"), contents).expect("Unable to write args.gn");
+}
+
+fn run(cmd: &mut Command, program: &str) {
+  use std::io::ErrorKind;
+  println!("running: {:?}", cmd);
+  let status = match cmd.status() {
+    Ok(status) => status,
+    Err(ref e) if e.kind() == ErrorKind::NotFound => {
+      fail(&format!(
+        "failed to execute command: {}\nis `{}` not installed?",
+        e, program
+      ));
+    }
+    Err(e) => fail(&format!("failed to execute command: {}", e)),
+  };
+  if !status.success() {
+    fail(&format!(
+      "command did not execute successfully, got: {}",
+      status
+    ));
+  }
+}
+
+fn fail(s: &str) -> ! {
+  panic!("\n{}\n\nbuild script failed, must exit now", s)
 }
