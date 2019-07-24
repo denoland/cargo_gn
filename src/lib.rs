@@ -1,8 +1,8 @@
 use std::collections::HashSet;
 use std::env;
-use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
+use std::process::Stdio;
 
 pub fn out_dir() -> PathBuf {
   // The OUT_DIR is going to be a crate-specific directory like
@@ -44,13 +44,17 @@ fn ninja() -> String {
   env::var("NINJA").unwrap_or_else(|_| "ninja".to_owned())
 }
 
-// TODO(ry) debug_args and release_args should be Vec<String> ?
-pub fn maybe_gen(root: &str, debug_args: &str, release_args: &str) -> PathBuf {
+pub type GnArgs = Vec<(String, String)>;
+
+pub fn maybe_gen(root: &str, gn_args: GnArgs) -> PathBuf {
   let gn_out_dir = out_dir().join("gn_out");
 
   if !gn_out_dir.exists() {
-    let args = if is_debug() { debug_args } else { release_args };
-    write_args(&gn_out_dir, args);
+    let args = gn_args
+      .iter()
+      .map(|(name, value)| name.clone() + "=" + value)
+      .collect::<Vec<String>>()
+      .join(" ");
 
     let path = env::current_dir().unwrap();
     println!("The current directory is {}", path.display());
@@ -59,6 +63,10 @@ pub fn maybe_gen(root: &str, debug_args: &str, release_args: &str) -> PathBuf {
     cmd.arg(format!("--root={}", root));
     cmd.arg("gen");
     cmd.arg(&gn_out_dir);
+    cmd.arg("--args=".to_owned() + &args);
+    cmd.stdout(Stdio::inherit());
+    cmd.stderr(Stdio::inherit());
+    cmd.envs(env::vars());
     run(&mut cmd, "gn gen");
   }
   gn_out_dir
@@ -115,11 +123,6 @@ fn ninja_get_deps(out_dir: &PathBuf, target: &str) -> HashSet<String> {
     }
   }
   files
-}
-
-fn write_args(path: &PathBuf, contents: &str) {
-  fs::create_dir_all(path).expect("Unable to create gn_out directory");
-  fs::write(path.join("args.gn"), contents).expect("Unable to write args.gn");
 }
 
 fn run(cmd: &mut Command, program: &str) {
