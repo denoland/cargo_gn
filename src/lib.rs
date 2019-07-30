@@ -1,4 +1,5 @@
-use std::collections::HashSet;
+mod deps;
+
 use std::env;
 use std::path::PathBuf;
 use std::process::Command;
@@ -93,32 +94,12 @@ pub fn build(target: &str) {
 /// build.rs does not get re-run unless we tell cargo about what files we
 /// depend on. This outputs a bunch of rerun-if-changed lines to stdout.
 fn rerun_if_changed(out_dir: &PathBuf, target: &str) {
-  // TODO(ry) `ninja -t deps` isn't sufficent. It doesn't capture runtime deps.
-  let deps = ninja_get_deps(out_dir, target);
+  let deps = deps::ninja_get_deps(&ninja(), out_dir, target);
   for d in deps {
     let p = out_dir.join(d);
-    debug_assert!(p.exists());
+    assert!(p.exists());
     println!("cargo:rerun-if-changed={}", p.display());
   }
-}
-
-fn ninja_get_deps(out_dir: &PathBuf, target: &str) -> HashSet<String> {
-  let output = Command::new(ninja())
-    .arg("-C")
-    .arg(out_dir)
-    .arg(target)
-    .arg("-t")
-    .arg("deps")
-    .output()
-    .expect("ninja failed");
-  let stdout = String::from_utf8(output.stdout).unwrap();
-  let mut files = HashSet::new();
-  for line in stdout.lines() {
-    if line.starts_with("  ") {
-      files.insert(line.trim().to_string());
-    }
-  }
-  files
 }
 
 fn run(cmd: &mut Command, program: &str) {
