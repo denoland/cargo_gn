@@ -44,17 +44,13 @@ fn ninja() -> String {
   env::var("NINJA").unwrap_or_else(|_| "ninja".to_owned())
 }
 
-pub type GnArgs = Vec<(String, String)>;
+pub type GnArgs = Vec<String>;
 
 pub fn maybe_gen(root: &str, gn_args: GnArgs) -> PathBuf {
   let gn_out_dir = out_dir().join("gn_out");
 
   if !gn_out_dir.exists() {
-    let args = gn_args
-      .iter()
-      .map(|(name, value)| name.clone() + "=" + value)
-      .collect::<Vec<String>>()
-      .join(" ");
+    let args = gn_args.join(" ");
 
     let path = env::current_dir().unwrap();
     println!("The current directory is {}", path.display());
