@@ -69,7 +69,9 @@ pub fn maybe_gen(root: &str, gn_args: GnArgs) -> PathBuf {
   gn_out_dir
 }
 
-pub fn build(target: &str) {
+pub type NinjaEnv = Vec<(String, String)>;
+
+pub fn build(target: &str, env: NinjaEnv) {
   let gn_out_dir = out_dir().join("gn_out");
 
   // This helps Rust source files locate the snapshot, source map etc.
@@ -79,6 +81,9 @@ pub fn build(target: &str) {
   cmd.arg("-C");
   cmd.arg(&gn_out_dir);
   cmd.arg(target);
+  for item in env {
+    cmd.env(item.0, item.1);
+  }
   run(&mut cmd, "ninja");
 
   rerun_if_changed(&gn_out_dir, target);
