@@ -61,4 +61,4 @@ before_script:
 
 script:
 - cd $TRAVIS_BUILD_DIR
-- cargo test --all -vv
+- ./test.sh

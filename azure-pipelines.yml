@@ -30,5 +30,5 @@ steps:
 
   - script: |
       echo "ninja $(which ninja) gn $(which gn)"
-      cargo test -vv --all
+      ./test.sh
     displayName: Cargo test
