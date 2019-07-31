@@ -1,31 +1,24 @@
 use std::collections::HashSet;
 use std::path::PathBuf;
-use std::process::Command;
 
 pub fn ninja_get_deps(
-  ninja: &str,
   out_dir: &PathBuf,
+  maybe_env: Option<crate::NinjaEnv>,
   target: &str,
 ) -> HashSet<String> {
-  let output = Command::new(ninja)
-    .arg("-C")
-    .arg(out_dir)
-    .arg("-t")
-    .arg("graph")
-    .arg(target)
-    .output()
-    .expect("ninja -t graph failed");
+  let mut cmd = crate::ninja(out_dir, maybe_env.clone());
+  cmd.arg("-t");
+  cmd.arg("graph");
+  cmd.arg(target);
+  let output = cmd.output().expect("ninja -t graph failed");
   let stdout = String::from_utf8(output.stdout).unwrap();
   let graph_files = parse_ninja_graph(&stdout);
 
-  let output = Command::new(ninja)
-    .arg("-C")
-    .arg(out_dir)
-    .arg(target)
-    .arg("-t")
-    .arg("deps")
-    .output()
-    .expect("ninja -t deps failed");
+  let mut cmd = crate::ninja(out_dir, maybe_env);
+  cmd.arg(target);
+  cmd.arg("-t");
+  cmd.arg("deps");
+  let output = cmd.output().expect("ninja -t deps failed");
   let stdout = String::from_utf8(output.stdout).unwrap();
   let deps_files = parse_ninja_deps(&stdout);
 
