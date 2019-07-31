@@ -1,6 +1,5 @@
 # Cargo GN integration
 
-[![Azure Pipelines Status](<https://dev.azure.com/denoland/cargo_gn/_apis/build/status/denoland.cargo_gn%20(1)?branchName=master>)](https://dev.azure.com/denoland/cargo_gn/_build/latest?definitionId=6&branchName=master)
 [![Travis Status](https://travis-ci.com/denoland/cargo_gn.svg?branch=master)](https://travis-ci.com/denoland/cargo_gn)
 
 https://crates.io/crates/cargo_gn
@@ -13,7 +12,7 @@ Put the following in your `Cargo.toml`
 
 ```toml
 [build-dependencies]
-cargo_gn = "0.0.9"
+cargo_gn = "0.0.13"
 ```
 
 Now you should be able to add a `.gn` file in the root of your project and
