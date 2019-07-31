@@ -13,3 +13,6 @@ members = [
   "example",
   ".",
 ]
+
+[badges]
+travis-ci = { repository = "denoland/cargo_gn" }
