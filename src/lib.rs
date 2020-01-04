@@ -61,7 +61,7 @@ pub type GnArgs = Vec<String>;
 pub fn maybe_gen(root: &str, gn_args: GnArgs) -> PathBuf {
   let gn_out_dir = out_dir().join("gn_out");
 
-  if !gn_out_dir.exists() {
+  if !gn_out_dir.exists() || !gn_out_dir.join("build.ninja").exists() {
     let args = gn_args.join(" ");
 
     let path = env::current_dir().unwrap();
