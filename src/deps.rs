@@ -49,12 +49,12 @@ pub fn parse_ninja_graph(s: &str) -> HashSet<String> {
   // This is extremely hacky and likely to break.
   for line in s.lines() {
     //println!("line {}", line);
-    if line.starts_with("\"")
+    if line.starts_with('\"')
       && line.contains("label=")
       && !line.contains("shape=")
       && !line.contains(" -> ")
     {
-      let filename = line.split("\"").nth(3).unwrap();
+      let filename = line.split('\"').nth(3).unwrap();
       if !filename.starts_with("..") {
         continue;
       }
@@ -68,7 +68,7 @@ pub fn parse_ninja_graph(s: &str) -> HashSet<String> {
 #[cfg(test)]
 mod test {
   use super::*;
-  const MOCK_GRAPH: &'static str = r#"
+  const MOCK_GRAPH: &str = r#"
 digraph ninja {
 rankdir="LR"
 node [fontsize=10, shape=box, height=0.25]
