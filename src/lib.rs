@@ -78,7 +78,7 @@ fn maybe_symlink_root_dir(dirs: &mut Dirs) {
       }
     }
 
-    dirs.out = symlink.to_path_buf();
+    dirs.root = symlink.to_path_buf();
   }
 }
 
