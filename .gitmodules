@@ -1,3 +1,0 @@
-[submodule "build"]
-	path = example/build
-	url = https://github.com/timniederhausen/gn-build
